@@ -12,7 +12,7 @@ Model name is converted to lowercase for the collection name:
 """
 
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Literal
 
 # Example schemas (replace with your own):
 
@@ -37,6 +37,34 @@ class Product(BaseModel):
     price: float = Field(..., ge=0, description="Price in dollars")
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
+
+# Notion-like productivity app schemas
+
+class Workspace(BaseModel):
+    """
+    Workspaces collection schema
+    Collection name: "workspace"
+    """
+    name: str = Field(..., description="Workspace name")
+
+class Page(BaseModel):
+    """
+    Pages collection schema
+    Collection name: "page"
+    """
+    workspace_id: str = Field(..., description="Reference to workspace _id (string)")
+    title: str = Field("Untitled", description="Page title")
+
+class Block(BaseModel):
+    """
+    Blocks collection schema
+    Collection name: "block"
+    """
+    page_id: str = Field(..., description="Reference to page _id (string)")
+    type: Literal["text", "todo"] = Field("text", description="Block type")
+    content: str = Field("", description="Block textual content")
+    checked: Optional[bool] = Field(False, description="Todo checked state (for todo blocks)")
+    position: int = Field(0, ge=0, description="Order position within the page")
 
 # Add your own schemas here:
 # --------------------------------------------------
